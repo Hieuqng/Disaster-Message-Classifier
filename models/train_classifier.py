@@ -71,7 +71,7 @@ def build_model(model_filepath=None):
     return clf
 
 
-def evaluate_model(model, X_test, Y_test, category_names, verbose=False):
+def evaluate_model(model, X_test, Y_test, category_names, verbose=True):
     Y_pred = model.predict(X_test)
     report = classification_report(Y_test, Y_pred, target_names=category_names, output_dict=True)
 
