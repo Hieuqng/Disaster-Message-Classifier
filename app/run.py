@@ -11,8 +11,11 @@ from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
+from plot_wc import *
+
 
 app = Flask(__name__)
+
 
 def tokenize(text):
     tokens = word_tokenize(text)
@@ -24,6 +27,7 @@ def tokenize(text):
         clean_tokens.append(clean_tok)
 
     return clean_tokens
+
 
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
@@ -38,37 +42,80 @@ model = joblib.load("../models/nbsvm.pkl")
 @app.route('/index')
 def index():
 
-    # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
+    #############
+    ### PLOT 1 ##
+    #############
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    data1 = [
+        Bar(
+            x=genre_names,
+            y=genre_counts
+        )
+    ]
+
+    layout1 = {
+        'title': 'Distribution of Message Genres',
+        'yaxis': {
+            'title': "Count"
+        },
+        'xaxis': {
+            'title': "Genre"
+        }
+    }
+
+    #############
+    ### PLOT 2 ##
+    #############
+    # Grouped Bar chart by genres for most classified categories
+    numeric_df = df.drop(['id', 'message', 'original'], axis=1)
+    by_genre = numeric_df.groupby('genre').aggregate('sum')
+
+    # Find labels that are classified most oftern
+    top_labels = by_genre.sum().sort_values(ascending=False)[:5].index
+    ext_genre = by_genre[top_labels]
+    categories = ext_genre.index
+
+    data2 = []
+    for col in ext_genre.columns:
+        data2.append(Bar(
+            x=categories,
+            y=ext_genre[col].values,
+            name=col
+        ))
+
+    layout2 = {
+        'barmode': 'group',
+        'title': 'Top Message Categories by Genres',
+
+        'yaxis': {
+            'title': "Count"
+        },
+
+        'xaxis': {
+            'title': "Genre"
+        }
+    }
 
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
-            'data': [
-                Bar(
-                    x=genre_names,
-                    y=genre_counts
-                )
-            ],
+            'data': data1,
+            'layout': layout1
+        },
 
-            'layout': {
-                'title': 'Distribution of Message Genres',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Genre"
-                }
-            }
+        {
+            'data': data2,
+            'layout': layout2
         }
     ]
 
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
+    # image = return_image(df)
 
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
