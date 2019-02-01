@@ -11,8 +11,6 @@ from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
-from plot_wc import *
-
 
 app = Flask(__name__)
 
