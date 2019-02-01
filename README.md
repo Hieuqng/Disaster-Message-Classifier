@@ -2,7 +2,7 @@
 Disaster Messages (such as tweets, facebook posts, etc) are good indicators of people's need in emergency. The aim of emergency response is to provide immediate assistance to maintain life, improve health and support the morale of the affected population. Therefore, being able to categorize the messages to match people's demand brings about huge socio-economic benefits.
 In this project, I will a simple web app where an emergency worker can input a new message and get classification results in several categories. The web app will also display some visualizations of the dataset in general.
 
-![Disaster Response](https://github.com/Hieuqng/Disaster-Message-Classifier/blob/master/images/front_page.jpg)
+![Disaster Response](https://github.com/Hieuqng/Disaster-Message-Classifier/blob/master/images/front_page.jpg = 500x500)
 
 
 ## Getting Started
