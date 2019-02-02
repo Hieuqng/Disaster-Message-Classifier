@@ -36,5 +36,5 @@ pip install .
 
 ## Authors
 
-* **Hieu Nguyen** - [Github](https://github.com/Hieuqng)
+* **Hieu Nguyen**
 
